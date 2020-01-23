@@ -73,7 +73,17 @@ router.get("/offer/with-count", async (req, res) => {
       search.limit(limit).skip(limit * (page - 1));
     }
     const offers = await search;
-    res.json(offers);
+    const count = offers.length;
+    offers.forEach(offer => {
+      const newOffer;
+      (newOffer._id = offer.id),
+        (newOffer.title = offer.title),
+        (newOffer.description = offer.description),
+        (newOffer.price = offer.price),
+        newOffer.created = offer.created;
+    });
+
+    res.json(newOffer);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
