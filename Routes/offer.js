@@ -8,7 +8,6 @@ const router = express.Router();
 const User = require("../Models/User");
 const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
-const createFilter = require("../Middleware/createFilter");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
@@ -35,7 +34,24 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
   }
 });
 
-router.post("/offer/with-count", createFilter, async (req, res) => {
+const createFilter = req => {
+  const filters = {};
+  if (req.query.priceMin) {
+    filters.price = {};
+    filters.price.$gte = req.query.priceMin;
+  }
+  if (req.query.priceMax) {
+    if (filters.price === undefined) {
+      filters.price = {};
+    }
+    filters.price.$lte = req.query.priceMax;
+  }
+  if (req.query.title) {
+    filters.title = new RegExp(req.query.title, "i");
+  }
+  return filters;
+};
+router.get("/offer/with-count", async (req, res) => {
   try {
     const filters = createFilter(req);
 
@@ -57,11 +73,28 @@ router.post("/offer/with-count", createFilter, async (req, res) => {
       search.limit(limit).skip(limit * (page - 1));
     }
     const offers = await search;
-
     res.json(offers);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+});
+
+router.get("/offer/:id", async (req, res) => {
+  const offer = await Offer.findById(req.params.id);
+  res.json({
+    _id: offer.id,
+    title: offer.title,
+    description: offer.description,
+    price: offer.price,
+    creator: {
+      account: {
+        username: offer.cerator.account.username,
+        phone: offer.creator.account.phone
+      },
+      _id: offer.creator.id
+    },
+    created: offer.created
+  });
 });
 
 module.exports = router;
