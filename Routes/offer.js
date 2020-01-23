@@ -74,6 +74,7 @@ router.get("/offer/with-count", async (req, res) => {
     }
     const offers = await search;
     const count = offers.length;
+    const tab = [];
     offers.forEach(offer => {
       const newOffer = {};
       (newOffer._id = offer.id),
@@ -81,9 +82,10 @@ router.get("/offer/with-count", async (req, res) => {
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
         (newOffer.created = offer.created);
+      tab.push(newOffer);
     });
 
-    res.json(newOffer);
+    res.json({ count: count, offers: tab });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
