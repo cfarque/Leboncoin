@@ -75,12 +75,12 @@ router.get("/offer/with-count", async (req, res) => {
     const offers = await search;
     const count = offers.length;
     offers.forEach(offer => {
-      const newOffer;
+      const newOffer = {};
       (newOffer._id = offer.id),
         (newOffer.title = offer.title),
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
-        newOffer.created = offer.created;
+        (newOffer.created = offer.created);
     });
 
     res.json(newOffer);
