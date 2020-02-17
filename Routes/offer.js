@@ -104,13 +104,14 @@ router.get("/offer/with-count", async (req, res) => {
         (newOffer.price = offer.price),
         (newOffer.created = offer.created);
       newOffer.picture = offer.picture;
+      newOffer.username = offer.username;
       //
       tab.push(newOffer);
     });
 
     res.json({ count: count, offers: tab });
   } catch (error) {
-    res.status(400).json({ error: error.message } + "ok");
+    res.status(400).json({ error: error.message });
   }
 });
 
