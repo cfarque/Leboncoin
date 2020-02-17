@@ -18,31 +18,35 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    cloudinary.uploader.upload(req.files.picture.path, function(error, result) {
+    cloudinary.uploader.upload(req.files.picture.path, async function(
+      error,
+      result
+    ) {
       console.log(result.secure_url);
       // res.json({url: result.secure_url})
-    });
-    // je créé une nouvelle offre
-    const offer = new Offer({
-      title: req.fields.title,
-      description: req.fields.description,
-      price: req.fields.price,
-      creator: req.user,
-      picture: req.files.file.path
-    });
-    // je sauvegarde l'offre
-    await offer.save();
-    res.json({
-      _id: offer.id,
-      title: offer.title,
-      date: offer.created,
-      description: offer.description,
-      created: offer.date,
-      pictures: offer.picture,
-      creator: {
-        username: offer.creator.account.username,
-        _id: offer.creator._id
-      }
+      // je créé une nouvelle offre
+      const offer = new Offer({
+        title: req.fields.title,
+        description: req.fields.description,
+        price: req.fields.price,
+        creator: req.user,
+        picture: result.secure_url
+      });
+      // je sauvegarde l'offre
+      await offer.save();
+      console.log(offer);
+      res.json({
+        _id: offer.id,
+        title: offer.title,
+        date: offer.created,
+        description: offer.description,
+        created: offer.date,
+        pictures: offer.picture,
+        creator: {
+          username: offer.creator.account.username,
+          _id: offer.creator._id
+        }
+      });
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
