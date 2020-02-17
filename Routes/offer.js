@@ -1,10 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
-  cloud_name: CLOUD_NAME,
-  api_key: API_KEY,
-  api_secret: API_SECRET
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
 });
 
 //const uid2 = require("uid2");
@@ -17,6 +18,11 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
+    cloudinary.uploader.upload(req.files.picture.path, function(error, result) {
+      console.log(result.secure_url);
+      // res.json({url: result.secure_url})
+    });
+    // je créé une nouvelle offre
     const offer = new Offer({
       title: req.fields.title,
       description: req.fields.description,
@@ -24,6 +30,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       creator: req.user,
       picture: req.files.file.path
     });
+    // je sauvegarde l'offre
     await offer.save();
     res.json({
       _id: offer.id,
@@ -31,6 +38,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       date: offer.created,
       description: offer.description,
       created: offer.date,
+      pictures: offer.picture,
       creator: {
         username: offer.creator.account.username,
         _id: offer.creator._id
@@ -42,6 +50,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 });
 
 const createFilter = req => {
+  // je créé des filtres
   const filters = {};
   if (req.query.priceMin) {
     filters.price = {};
@@ -61,7 +70,7 @@ const createFilter = req => {
 router.get("/offer/with-count", async (req, res) => {
   try {
     const filters = createFilter(req);
-
+    // j'utilise les filtres
     const search = Offer.find(filters).populate("creator");
     if (req.query.sort === "price-asc") {
       search.sort({ price: 1 });
@@ -79,16 +88,21 @@ router.get("/offer/with-count", async (req, res) => {
       const limit = req.query.limit || 50;
       search.limit(limit).skip(limit * (page - 1));
     }
+    // je créé une constante qui contient le résultat de la recherche
     const offers = await search;
     const count = offers.length;
     const tab = [];
+    // je parcours ma recherche
     offers.forEach(offer => {
+      // pour chaque offre je créé un nouvel objet avec des clés
       const newOffer = {};
       (newOffer._id = offer.id),
         (newOffer.title = offer.title),
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
         (newOffer.created = offer.created);
+      newOffer.pictures = offer.pictures;
+      //
       tab.push(newOffer);
     });
 
@@ -105,6 +119,7 @@ router.get("/offer/:id", async (req, res) => {
     title: offer.title,
     description: offer.description,
     price: offer.price,
+    pictures: offer.picture,
     creator: {
       account: {
         username: offer.cerator.account.username,
@@ -116,9 +131,9 @@ router.get("/offer/:id", async (req, res) => {
   });
 });
 
-router.post("/offer/upload", (req, res) => {
-  // on log les fichiers reçus
-  console.log(req.files); // { file1: ..., file2: ... }
-});
+// router.post("/offer/upload", (req, res) => {
+//   // on log les fichiers reçus
+//   console.log(req.files); // { file1: ..., file2: ... }
+// });
 
 module.exports = router;

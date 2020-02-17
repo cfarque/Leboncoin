@@ -3,10 +3,9 @@ const formidableMiddleware = require("express-formidable");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-app.use(cors());
 require("dotenv").config();
-const app = express();
 app.use(formidableMiddleware());
+app.use(cors());
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
