@@ -39,7 +39,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         date: offer.created,
         description: offer.description,
         created: offer.date,
-        pictures: offer.picture,
+        picture: offer.picture,
         creator: {
           username: offer.creator.account.username,
           _id: offer.creator._id
