@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const cors = require("cors");
+const app = express();
+app.use(cors());
 
 const uid2 = require("uid2");
 const SHA256 = require("crypto-js/sha256");

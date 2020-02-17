@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const cors = require("cors");
+const app = express();
+app.use(cors());
 const cloudinary = require("cloudinary");
 cloudinary.config({
   cloud_name: CLOUD_NAME,

@@ -1,6 +1,9 @@
 const express = require("express");
 const formidableMiddleware = require("express-formidable");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const app = express();
+app.use(cors());
 require("dotenv").config();
 const app = express();
 app.use(formidableMiddleware());
