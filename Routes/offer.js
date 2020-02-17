@@ -91,11 +91,11 @@ router.get("/offer/with-count", async (req, res) => {
       search.limit(limit).skip(limit * (page - 1));
     }
     // je créé une constante qui contient le résultat de la recherche
-    const results = await search;
+    const offers = await search;
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
-    results.forEach(result => {
+    offers.forEach(result => {
       // pour chaque offre je créé un nouvel objet avec des clés
       const newOffer = {};
       (newOffer._id = offer.id),
