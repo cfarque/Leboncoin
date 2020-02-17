@@ -125,7 +125,7 @@ router.get("/offer/:id", async (req, res) => {
       picture: offer.picture,
       creator: {
         account: {
-          username: offer.cerator.account.username,
+          username: offer.creator.account.username,
           phone: offer.creator.account.phone
         },
         _id: offer.creator.id
