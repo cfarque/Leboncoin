@@ -1,5 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const cloudinary = require("cloudinary");
+cloudinary.config({
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET
+});
 
 //const uid2 = require("uid2");
 //const SHA256 = require("crypto-js/sha256");
@@ -15,7 +21,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       title: req.fields.title,
       description: req.fields.description,
       price: req.fields.price,
-      creator: req.user
+      creator: req.user,
+      picture: req.files.file.path
     });
     await offer.save();
     res.json({
@@ -107,6 +114,11 @@ router.get("/offer/:id", async (req, res) => {
     },
     created: offer.created
   });
+});
+
+router.post("/offer/upload", (req, res) => {
+  // on log les fichiers reçus
+  console.log(req.files); // { file1: ..., file2: ... }
 });
 
 module.exports = router;
