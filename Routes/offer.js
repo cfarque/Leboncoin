@@ -17,7 +17,9 @@ const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
+  console.log("offer ok");
   try {
+    console.log("cloudinary ok");
     cloudinary.uploader.upload(req.files.picture.path, async function(
       error,
       result

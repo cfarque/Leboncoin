@@ -28,11 +28,13 @@ router.post("/user/log_in", async (req, res) => {
 });
 
 router.post("/user/sign_up", async (req, res) => {
+  console.log("ok signup");
   try {
     const user = await User.findOne({ email: req.fields.email });
     /*
     je vérifie que l'adresse email n'est pas déjà utilisée.
     */
+
     if (req.fields.username && req.fields.email && req.fields.password) {
       if (!user) {
         const token = uid2(64);
@@ -49,6 +51,7 @@ router.post("/user/sign_up", async (req, res) => {
           }
         });
         await newUser.save();
+
         res.json({
           // ne renvoyer que les données non sensibles et utiles côté client
           _id: newUser._id,
