@@ -91,11 +91,11 @@ router.get("/offer/with-count", async (req, res) => {
       search.limit(limit).skip(limit * (page - 1));
     }
     // je créé une constante qui contient le résultat de la recherche
-    const offers = await search;
+    const results = await search;
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
-    offers.forEach(offer => {
+    results.forEach(result => {
       // pour chaque offre je créé un nouvel objet avec des clés
       const newOffer = {};
       (newOffer._id = offer.id),
@@ -115,22 +115,26 @@ router.get("/offer/with-count", async (req, res) => {
 });
 
 router.get("/offer/:id", async (req, res) => {
-  const offer = await Offer.findById(req.params.id);
-  res.json({
-    _id: offer.id,
-    title: offer.title,
-    description: offer.description,
-    price: offer.price,
-    pictures: offer.picture,
-    creator: {
-      account: {
-        username: offer.cerator.account.username,
-        phone: offer.creator.account.phone
+  try {
+    const offer = await Offer.findById(req.params.id);
+    res.json({
+      _id: offer.id,
+      title: offer.title,
+      description: offer.description,
+      price: offer.price,
+      picture: offer.picture,
+      creator: {
+        account: {
+          username: offer.cerator.account.username,
+          phone: offer.creator.account.phone
+        },
+        _id: offer.creator.id
       },
-      _id: offer.creator.id
-    },
-    created: offer.created
-  });
+      created: offer.created
+    });
+  } catch (error) {
+    res.json("raté");
+  }
 });
 
 // router.post("/offer/upload", (req, res) => {
