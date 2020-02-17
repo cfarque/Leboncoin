@@ -95,7 +95,7 @@ router.get("/offer/with-count", async (req, res) => {
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
-    offers.forEach(result => {
+    offers.forEach(offer => {
       // pour chaque offre je créé un nouvel objet avec des clés
       const newOffer = {};
       (newOffer._id = offer.id),
