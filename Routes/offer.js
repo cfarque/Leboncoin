@@ -103,7 +103,7 @@ router.get("/offer/with-count", async (req, res) => {
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
         (newOffer.created = offer.created);
-      newOffer.pictures = offer.pictures;
+      newOffer.picture = offer.picture;
       //
       tab.push(newOffer);
     });
