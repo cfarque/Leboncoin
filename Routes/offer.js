@@ -22,7 +22,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       error,
       result
     ) {
-      console.log(result.secure_url);
       // res.json({url: result.secure_url})
       // je créé une nouvelle offre
       const offer = new Offer({
@@ -34,7 +33,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
       // je sauvegarde l'offre
       await offer.save();
-      console.log(offer);
       res.json({
         _id: offer.id,
         title: offer.title,
@@ -112,7 +110,7 @@ router.get("/offer/with-count", async (req, res) => {
 
     res.json({ count: count, offers: tab });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ error: error.message } + "ok");
   }
 });
 
