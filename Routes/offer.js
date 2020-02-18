@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const createStripe = require("stripe");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
@@ -12,42 +13,54 @@ cloudinary.config({
 //const SHA256 = require("crypto-js/sha256");
 //const encBase64 = require("crypto-js/enc-base64");
 
-const User = require("../Models/User");
 const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 
-router.post("/offer/publish", isAuthenticated, async (req, res) => {
-  const files = Object.keys(req.files);
-  console.log(files);
+const stripe = createStripe(process.env.API_STRIPE);
 
+router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    cloudinary.uploader.upload(req.files.picture.path, async function(
-      error,
-      result
-    ) {
-      // je créé une nouvelle offre
-      const offer = new Offer({
-        title: req.fields.title,
-        description: req.fields.description,
-        price: req.fields.price,
-        creator: req.user,
-        picture: result.secure_url
+    const files = Object.keys(req.files);
+    if (files.length) {
+      const pictures = [];
+      files.forEach(key => {
+        cloudinary.uploader.upload(req.files[key].path, async function(
+          result,
+          error
+        ) {
+          if (!error) {
+            pictures.push(result.secure_url);
+          } else {
+            console.log(error);
+          }
+
+          if (pictures.length === files.length) {
+            // je créé une nouvelle offre
+            const offer = new Offer({
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              creator: req.user,
+              pictures
+            });
+            // je sauvegarde l'offre
+            await offer.save();
+            res.json({
+              _id: offer.id,
+              title: offer.title,
+              date: offer.created,
+              description: offer.description,
+              created: offer.date,
+              pictures,
+              creator: {
+                username: offer.creator.account.username,
+                _id: offer.creator._id
+              }
+            });
+          }
+        });
       });
-      // je sauvegarde l'offre
-      await offer.save();
-      res.json({
-        _id: offer.id,
-        title: offer.title,
-        date: offer.created,
-        description: offer.description,
-        created: offer.date,
-        picture: offer.picture,
-        creator: {
-          username: offer.creator.account.username,
-          _id: offer.creator._id
-        }
-      });
-    });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -125,6 +138,22 @@ router.get("/offer/:id", async (req, res) => {
   } catch (error) {
     res.json("raté");
   }
+});
+
+router.post("/payment", async (req, res) => {
+  console.log(req.fields);
+  try {
+    const response = await stripe.charges.create({
+      amount: req.fields.price + 00,
+      currency: "eur",
+      description: req.fields.title,
+      source: req.fields.token
+    });
+    console.log("stripe ok");
+  } catch (error) {
+    console.log(error);
+  }
+  res.status(500).end();
 });
 
 // router.post("/offer/upload", (req, res) => {
