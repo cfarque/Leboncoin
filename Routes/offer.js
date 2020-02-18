@@ -17,12 +17,14 @@ const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
+  const files = Object.keys(req.files);
+  console.log(files);
+
   try {
     cloudinary.uploader.upload(req.files.picture.path, async function(
       error,
       result
     ) {
-      // res.json({url: result.secure_url})
       // je créé une nouvelle offre
       const offer = new Offer({
         title: req.fields.title,
