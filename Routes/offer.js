@@ -107,18 +107,18 @@ router.get("/offer/with-count", async (req, res) => {
     const offers = await search;
     const count = offers.length;
     const tab = [];
-    console.log(offer);
     // je parcours ma recherche
     offers.forEach(offer => {
       // pour chaque offre je créé un nouvel objet avec des clés
+      console.log(offer.picture);
       const newOffer = {};
       (newOffer._id = offer.id),
         (newOffer.title = offer.title),
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
-        (newOffer.created = offer.created);
-      newOffer.picture = offer.picture;
-      newOffer.username = offer.username;
+        (newOffer.created = offer.created),
+        (newOffer.picture = offer.picture),
+        (newOffer.username = offer.creator.account.username);
       //
       tab.push(newOffer);
     });

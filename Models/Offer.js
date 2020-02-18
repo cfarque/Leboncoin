@@ -5,7 +5,7 @@ const Offer = mongoose.model("Offer", {
   description: { type: String, minlength: 1, maxlength: 500, required: true },
   price: { type: Number, min: 0, max: 100000 },
   created: { type: Date, default: Date.now },
-  pictures: { type: [String] },
+  picture: { type: String },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
