@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const createStripe = require("stripe");
+const stripe = require("stripe")(process.env.API_STRIPE);
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
@@ -15,8 +15,6 @@ cloudinary.config({
 
 const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
-
-const stripe = createStripe(process.env.API_STRIPE);
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
@@ -109,6 +107,7 @@ router.get("/offer/with-count", async (req, res) => {
     const offers = await search;
     const count = offers.length;
     const tab = [];
+    console.log(offer);
     // je parcours ma recherche
     offers.forEach(offer => {
       // pour chaque offre je créé un nouvel objet avec des clés
@@ -141,19 +140,18 @@ router.get("/offer/:id", async (req, res) => {
 });
 
 router.post("/payment", async (req, res) => {
-  console.log(req.fields);
   try {
     const response = await stripe.charges.create({
-      amount: req.fields.price + 00,
+      amount: req.fields.amount * 100,
       currency: "eur",
       description: req.fields.title,
       source: req.fields.token
     });
-    console.log("stripe ok");
+    res.json(response);
   } catch (error) {
     console.log(error);
+    res.status(500).end();
   }
-  res.status(500).end();
 });
 
 // router.post("/offer/upload", (req, res) => {

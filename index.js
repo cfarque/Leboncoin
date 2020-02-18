@@ -19,7 +19,7 @@ const offerRoutes = require("./Routes/offer");
 app.use(offerRoutes);
 
 app.get("/", (req, res) => {
-  res.json({ messgae: "test route" });
+  res.json({ message: "test route" });
 });
 
 app.all("*", (req, res) => {
