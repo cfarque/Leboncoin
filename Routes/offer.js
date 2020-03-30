@@ -22,7 +22,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
-        console.log(key);
         cloudinary.uploader.upload(req.files[key].path, async function(
           result,
           error
@@ -41,7 +40,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               description: req.fields.description,
               price: req.fields.price,
               creator: req.user,
-              pictures
+              pictures: pictures
             });
             console.log(offer);
             // je sauvegarde l'offre
@@ -134,7 +133,6 @@ router.get("/offer/with-count", async (req, res) => {
 router.get("/offer/:id", async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.id).populate("creator");
-    console.log(offer);
     res.json(offer);
   } catch (error) {
     res.json("raté");
@@ -155,10 +153,5 @@ router.post("/payment", async (req, res) => {
     res.status(500).end();
   }
 });
-
-// router.post("/offer/upload", (req, res) => {
-//   // on log les fichiers reçus
-//   console.log(req.files); // { file1: ..., file2: ... }
-// });
 
 module.exports = router;
