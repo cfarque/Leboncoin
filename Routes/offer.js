@@ -110,7 +110,6 @@ router.get("/offer/with-count", async (req, res) => {
     // je parcours ma recherche
     offers.forEach(offer => {
       // pour chaque offre je créé un nouvel objet avec des clés
-      console.log(offer.picture);
       const newOffer = {};
       (newOffer._id = offer.id),
         (newOffer.title = offer.title),
