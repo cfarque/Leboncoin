@@ -19,7 +19,6 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const files = Object.keys(req.files);
-    console.log(files);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
@@ -35,6 +34,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           }
 
           if (pictures.length === files.length) {
+            console.log("picture.length");
             // je créé une nouvelle offre
             const offer = new Offer({
               title: req.fields.title,
@@ -43,6 +43,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               creator: req.user,
               pictures
             });
+            console.log(offer);
             // je sauvegarde l'offre
             await offer.save();
             res.json({
