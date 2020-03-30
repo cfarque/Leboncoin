@@ -6,6 +6,14 @@ const app = express();
 require("dotenv").config();
 app.use(formidableMiddleware({ multiples: true }));
 app.use(cors());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
