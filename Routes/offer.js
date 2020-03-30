@@ -17,6 +17,7 @@ const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
+  console.log("route");
   try {
     const files = Object.keys(req.files);
     if (files.length) {
