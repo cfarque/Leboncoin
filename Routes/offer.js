@@ -33,8 +33,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             console.log(error);
           }
 
+          console.log("picture.length");
           if (pictures.length === files.length) {
-            console.log("picture.length");
             // je créé une nouvelle offre
             const offer = new Offer({
               title: req.fields.title,
@@ -43,7 +43,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               creator: req.user,
               pictures: pictures
             });
-            console.log(offer);
+            console.log("offer", offer);
             // je sauvegarde l'offre
             await offer.save();
             res.json({
