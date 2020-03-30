@@ -20,20 +20,23 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
   console.log("route");
   try {
     const files = Object.keys(req.files);
+    console.log("files===> ", files);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
+        console.log("keys===> ", key);
         cloudinary.uploader.upload(req.files[key].path, async function(
           result,
           error
         ) {
           if (!error) {
+            console.log("!error");
             pictures.push(result.secure_url);
+            console.log("pictures ===>", pictures);
           } else {
             console.log(error);
           }
 
-          console.log("picture.length");
           if (pictures.length === files.length) {
             // je créé une nouvelle offre
             const offer = new Offer({
