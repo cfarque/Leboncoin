@@ -30,11 +30,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             folder: "Leboncoin"
           },
           (error, result) => {
-            console.log("test");
             if (!error) {
-              console.log("!error");
               pictures.push(result.secure_url);
-              console.log("pictures ===>", pictures);
             } else {
               console.log("error===> ", error);
             }
@@ -47,12 +44,12 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                 creator: req.user,
                 pictures: pictures
               });
-              console.log("offer", offer);
+
               // je sauvegarde l'offre
-              saveOffer();
               const saveOffer = async () => {
                 await offer.save();
               };
+              saveOffer();
               res.json({
                 _id: offer.id,
                 title: offer.title,
