@@ -26,9 +26,9 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       console.log(2);
       files.forEach(key => {
         console.log(3);
-        console.log("path ===> ", files[key]);
+        console.log("path ===> ", req.files[key]);
         cloudinary.uploader.upload(
-          files[key].path,
+          req.files[key].path,
           {
             folder: "Leboncoin"
           },
