@@ -75,7 +75,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(403).json({ error: error.message });
+    res.json({ error: error.message });
   }
 });
 
