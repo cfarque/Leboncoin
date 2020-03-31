@@ -17,10 +17,8 @@ const Offer = require("../Models/Offer");
 const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
-  console.log("route");
   try {
     const files = Object.keys(req.files);
-    console.log("files===> ", files);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
@@ -31,12 +29,13 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             folder: "Leboncoin"
           },
           async function(result, error) {
+            console.log("test");
             if (!error) {
               console.log("!error");
               pictures.push(result.secure_url);
               console.log("pictures ===>", pictures);
             } else {
-              console.log(error);
+              console.log("error===> ", error);
             }
             console.log("pictures.length===> ", pictures.length);
             console.log("files.length===> ", files.length);
