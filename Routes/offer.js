@@ -25,45 +25,48 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       const pictures = [];
       files.forEach(key => {
         console.log("keys===> ", key);
-        cloudinary.uploader.upload(req.files[key].path, async function(
-          result,
-          error
-        ) {
-          if (!error) {
-            console.log("!error");
-            pictures.push(result.secure_url);
-            console.log("pictures ===>", pictures);
-          } else {
-            console.log(error);
+        cloudinary.uploader.upload(
+          req.files[key].path,
+          {
+            folder: "Leboncoin"
+          },
+          async function(result, error) {
+            if (!error) {
+              console.log("!error");
+              pictures.push(result.secure_url);
+              console.log("pictures ===>", pictures);
+            } else {
+              console.log(error);
+            }
+            console.log("pictures.length===> ", pictures.length);
+            console.log("files.length===> ", files.length);
+            if (pictures.length === files.length) {
+              // je créé une nouvelle offre
+              const offer = new Offer({
+                title: req.fields.title,
+                description: req.fields.description,
+                price: req.fields.price,
+                creator: req.user,
+                pictures: pictures
+              });
+              console.log("offer", offer);
+              // je sauvegarde l'offre
+              await offer.save();
+              res.json({
+                _id: offer.id,
+                title: offer.title,
+                date: offer.created,
+                description: offer.description,
+                created: offer.date,
+                pictures,
+                creator: {
+                  username: offer.creator.account.username,
+                  _id: offer.creator._id
+                }
+              });
+            }
           }
-          console.log("pictures.length===> ", pictures.length);
-          console.log("files.length===> ", files.length);
-          if (pictures.length === files.length) {
-            // je créé une nouvelle offre
-            const offer = new Offer({
-              title: req.fields.title,
-              description: req.fields.description,
-              price: req.fields.price,
-              creator: req.user,
-              pictures: pictures
-            });
-            console.log("offer", offer);
-            // je sauvegarde l'offre
-            await offer.save();
-            res.json({
-              _id: offer.id,
-              title: offer.title,
-              date: offer.created,
-              description: offer.description,
-              created: offer.date,
-              pictures,
-              creator: {
-                username: offer.creator.account.username,
-                _id: offer.creator._id
-              }
-            });
-          }
-        });
+        );
       });
     }
   } catch (error) {
@@ -94,6 +97,7 @@ router.get("/offer/with-count", async (req, res) => {
     const filters = createFilter(req);
     // j'utilise les filtres
     const search = Offer.find(filters).populate("creator");
+
     if (req.query.sort === "price-asc") {
       search.sort({ price: 1 });
     } else if (req.query.sort === "price-desc") {
