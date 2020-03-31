@@ -36,7 +36,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           } else {
             console.log(error);
           }
-
+          console.log("pictures.length===> ", pictures.length);
+          console.log("files.length===> ", files.length);
           if (pictures.length === files.length) {
             // je créé une nouvelle offre
             const offer = new Offer({
