@@ -19,13 +19,9 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const files = Object.keys(req.files);
-    console.log(req.files);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
-        console.log("key===> ", key);
-        console.log("reqfile===> ", req.files[key]);
-        console.log("file===> ", files[key].file);
         cloudinary.uploader.upload(
           req.files[key].file.path,
           {
@@ -73,7 +69,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(403).json({ error: error.message });
   }
 });
 
