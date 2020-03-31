@@ -26,33 +26,33 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         console.log("key===> ", key);
         console.log("reqfile===> ", req.files[key].file);
         console.log("file===> ", files[key].file);
-        // cloudinary.uploader.upload(
-        //   req.files[key].path,
-        //   {
-        //     folder: "Leboncoin"
-        //   },
-        //   (error, result) => {
-        //     if (!error) {
-        //       pictures.push(result.secure_url);
-        //     } else {
-        //       console.log("error===> ", error);
-        //     }
-        //     if (pictures.length === files.length) {
-        //       // je créé une nouvelle offre
-        //       const offer = new Offer({
-        //         title: req.fields.title,
-        //         description: req.fields.description,
-        //         price: req.fields.price,
-        //         creator: req.user,
-        //         pictures: pictures
-        //       });
+        cloudinary.uploader.upload(
+          req.files[key].path,
+          {
+            folder: "Leboncoin"
+          },
+          (error, result) => {
+            if (!error) {
+              pictures.push(result.secure_url);
+            } else {
+              console.log("error===> ", error);
+            }
+            if (pictures.length === files.length) {
+              // je créé une nouvelle offre
+              const offer = new Offer({
+                title: req.fields.title,
+                description: req.fields.description,
+                price: req.fields.price,
+                creator: req.user,
+                pictures: pictures
+              });
 
-        //       // je sauvegarde l'offre
-        //       const saveOffer = async () => {
-        //         await offer.save();
-        //       };
-        //       saveOffer();
-      }}
+              // je sauvegarde l'offre
+              const saveOffer = async () => {
+                await offer.save();
+              };
+              saveOffer();
+
               res.json({
                 _id: offer.id,
                 title: offer.title,
@@ -65,11 +65,11 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                   _id: offer.creator._id
                 }
               });
-    //         }
-    //       }
-    //     );
-    //   });
-    // }
+            }
+          }
+        );
+      });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
