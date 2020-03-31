@@ -34,6 +34,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           (error, result) => {
             if (!error) {
               pictures.push(result.secure_url);
+              console.log("ok cloudinary");
             } else {
               console.log("error===> ", error);
             }
@@ -49,6 +50,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 
               // je sauvegarde l'offre
               const saveOffer = async () => {
+                console.log("saveOffer===> ", offer);
                 await offer.save();
               };
               saveOffer();
