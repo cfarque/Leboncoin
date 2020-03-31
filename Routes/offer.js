@@ -28,7 +28,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           {
             folder: "Leboncoin"
           },
-          async function(result, error) {
+          (result, error)=> {
             console.log("test");
             if (!error) {
               console.log("!error");
@@ -37,8 +37,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             } else {
               console.log("error===> ", error);
             }
-            console.log("pictures.length===> ", pictures.length);
-            console.log("files.length===> ", files.length);
             if (pictures.length === files.length) {
               // je créé une nouvelle offre
               const offer = new Offer({
@@ -57,7 +55,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                 date: offer.created,
                 description: offer.description,
                 created: offer.date,
-                pictures,
+                pictures: offer.pictures,
                 creator: {
                   username: offer.creator.account.username,
                   _id: offer.creator._id
