@@ -20,13 +20,13 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const files = Object.keys(req.files);
     console.log(1);
-    console.log(files.length);
+    console.log("lenght===> ", files.length);
     if (files.length) {
       const pictures = [];
       console.log(2);
       files.forEach(key => {
         console.log(3);
-        console.log("path ===> ", files[key].path);
+        console.log("path ===> ", files[key]);
         cloudinary.uploader.upload(
           files[key].path,
           {
