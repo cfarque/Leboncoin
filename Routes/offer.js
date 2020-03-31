@@ -24,34 +24,35 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       const pictures = [];
       files.forEach(key => {
         console.log("key===> ", key);
-        console.log("reqfile===> ", req.files.file[key]);
-        console.log("file===> ", files.file[key]);
-        cloudinary.uploader.upload(
-          req.files[key].path,
-          {
-            folder: "Leboncoin"
-          },
-          (error, result) => {
-            if (!error) {
-              pictures.push(result.secure_url);
-            } else {
-              console.log("error===> ", error);
-            }
-            if (pictures.length === files.length) {
-              // je créé une nouvelle offre
-              const offer = new Offer({
-                title: req.fields.title,
-                description: req.fields.description,
-                price: req.fields.price,
-                creator: req.user,
-                pictures: pictures
-              });
+        console.log("reqfile===> ", req.files[key].file);
+        console.log("file===> ", files[key].file);
+        // cloudinary.uploader.upload(
+        //   req.files[key].path,
+        //   {
+        //     folder: "Leboncoin"
+        //   },
+        //   (error, result) => {
+        //     if (!error) {
+        //       pictures.push(result.secure_url);
+        //     } else {
+        //       console.log("error===> ", error);
+        //     }
+        //     if (pictures.length === files.length) {
+        //       // je créé une nouvelle offre
+        //       const offer = new Offer({
+        //         title: req.fields.title,
+        //         description: req.fields.description,
+        //         price: req.fields.price,
+        //         creator: req.user,
+        //         pictures: pictures
+        //       });
 
-              // je sauvegarde l'offre
-              const saveOffer = async () => {
-                await offer.save();
-              };
-              saveOffer();
+        //       // je sauvegarde l'offre
+        //       const saveOffer = async () => {
+        //         await offer.save();
+        //       };
+        //       saveOffer();
+        
               res.json({
                 _id: offer.id,
                 title: offer.title,
