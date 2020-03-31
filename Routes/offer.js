@@ -19,6 +19,7 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const files = Object.keys(req.files);
+    console.log(files);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
