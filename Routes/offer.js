@@ -52,7 +52,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         //         await offer.save();
         //       };
         //       saveOffer();
-        
+      }}
               res.json({
                 _id: offer.id,
                 title: offer.title,
@@ -65,11 +65,11 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                   _id: offer.creator._id
                 }
               });
-            }
-          }
-        );
-      });
-    }
+    //         }
+    //       }
+    //     );
+    //   });
+    // }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
