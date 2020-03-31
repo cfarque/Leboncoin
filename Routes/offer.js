@@ -23,13 +23,13 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
       const pictures = [];
       files.forEach(key => {
         console.log("keys===> ", key);
-        console.log(req.files[key])
+        console.log(req.files[key]);
         cloudinary.uploader.upload(
           req.files[key].path,
           {
             folder: "Leboncoin"
           },
-          (result, error)=> {
+          (result, error) => {
             console.log("test");
             if (!error) {
               console.log("!error");
@@ -49,7 +49,10 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               });
               console.log("offer", offer);
               // je sauvegarde l'offre
-              await offer.save();
+              saveOffer();
+              const saveOffer = async () => {
+                await offer.save();
+              };
               res.json({
                 _id: offer.id,
                 title: offer.title,
