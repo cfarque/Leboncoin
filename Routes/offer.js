@@ -29,7 +29,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           {
             folder: "Leboncoin"
           },
-          (result, error) => {
+          (error, result) => {
             console.log("test");
             if (!error) {
               console.log("!error");
