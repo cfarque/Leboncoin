@@ -18,17 +18,20 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const files = Object.keys(req.files.files);
-    console.log("file===>", req.files.files);
+    const filesTab = req.files.files;
+    console.log("file===>", filesTab);
     console.log("File===>", req.files.files[0]);
-    if (files.length) {
+    console.log("File===>", req.files.files[0].File);
+    console.log("File===>", req.files.files[0].file);
+
+    if (filesTab.length) {
       const pictures = [];
-      files.forEach(key => {
+      req.files.files.forEach(key => {
         console.log("key==> ", key);
-        console.log("files.length===> ", files.length);
-        console.log("files[key]===> ", files[key]);
+        console.log("files.length===> ", filesTab.length);
+        console.log("filesTab[key]===> ", filesTab[key]);
         cloudinary.uploader.upload(
-          req.files.files[key].File.path,
+          filesTab[key].path,
           {
             folder: "Leboncoin"
           },
@@ -40,7 +43,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               console.log("error===> ", error);
             }
             console.log(4);
-            if (pictures.length === files.length) {
+            if (pictures.length === filesTab.length) {
               // je créé une nouvelle offre
               const offer = new Offer({
                 title: req.fields.title,
