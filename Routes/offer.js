@@ -25,7 +25,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     if (filesTab.length) {
       const pictures = [];
       filesTab.forEach((file, index) => {
-        console.log("key==> ", key);
+        console.log("file==> ", file);
         console.log("filesTab.length===> ", filesTab.length);
         console.log("filesTab[index]===> ", filesTab[index]);
         console.log("filesTab[index].path===> ", filesTab[index].path);
