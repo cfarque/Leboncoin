@@ -102,8 +102,10 @@ router.get("/offer/with-count", async (req, res) => {
     }
     if (req.query.date === "date-asc") {
       search.sort({ date: -1 });
+      console.log("asc");
     } else if (req.query.date === "date-desc") {
       search.sort({ date: 1 });
+      console.log("desc");
     }
 
     if (req.query.page) {
@@ -113,6 +115,7 @@ router.get("/offer/with-count", async (req, res) => {
     }
     // je créé une constante qui contient le résultat de la recherche
     const offers = await search;
+    console.log("search==> ", search);
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
