@@ -102,10 +102,8 @@ router.get("/offer/with-count", async (req, res) => {
     }
     if (req.query.date === "date-asc") {
       search.sort({ created: 1 });
-      console.log("asc");
     } else if (req.query.date === "date-desc") {
       search.sort({ created: -1 });
-      console.log("desc");
     }
 
     if (req.query.page) {
@@ -115,7 +113,6 @@ router.get("/offer/with-count", async (req, res) => {
     }
     // je créé une constante qui contient le résultat de la recherche
     const offers = await search;
-    console.log("offers==> ", offers);
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
@@ -142,6 +139,7 @@ router.get("/offer/with-count", async (req, res) => {
 router.get("/offer/:id", async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.id).populate("creator");
+    console.log(offer);
     res.json(offer);
   } catch (error) {
     res.json("raté");
