@@ -19,16 +19,9 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const filesTab = req.files.files;
-    console.log("filesTab===>", filesTab);
-    console.log("File===>", req.files.files[0]);
-
     if (filesTab.length) {
       const pictures = [];
       filesTab.forEach((file, index) => {
-        console.log("file==> ", file);
-        console.log("filesTab.length===> ", filesTab.length);
-        console.log("filesTab[index]===> ", filesTab[index]);
-        console.log("filesTab[index].path===> ", filesTab[index].path);
         cloudinary.uploader.upload(
           filesTab[index].path,
           {
@@ -37,11 +30,9 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           (error, result) => {
             if (!error) {
               pictures.push(result.secure_url);
-              console.log("ok cloudinary");
             } else {
               console.log("error===> ", error);
             }
-            console.log(4);
             if (pictures.length === filesTab.length) {
               // je créé une nouvelle offre
               const offer = new Offer({
@@ -54,7 +45,6 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
 
               // je sauvegarde l'offre
               const saveOffer = async () => {
-                console.log("saveOffer===> ", offer);
                 await offer.save();
               };
               saveOffer();
@@ -110,9 +100,9 @@ router.get("/offer/with-count", async (req, res) => {
     } else if (req.query.sort === "price-desc") {
       search.sort({ price: -1 });
     }
-    if (req.query.date === "date-desc") {
+    if (req.query.date === "date-asc") {
       search.sort({ date: -1 });
-    } else if (req.query.date === "date-asc") {
+    } else {
       search.sort({ date: 1 });
     }
 
