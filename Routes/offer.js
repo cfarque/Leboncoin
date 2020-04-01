@@ -91,7 +91,6 @@ const createFilter = req => {
 };
 router.get("/offer/with-count", async (req, res) => {
   try {
-    console.log(req.query);
     const filters = createFilter(req);
     // j'utilise les filtres
     const search = Offer.find(filters).populate("creator");
@@ -103,7 +102,7 @@ router.get("/offer/with-count", async (req, res) => {
     }
     if (req.query.date === "date-asc") {
       search.sort({ date: -1 });
-    } else {
+    } else if (req.query.date === "date-desc") {
       search.sort({ date: 1 });
     }
 
