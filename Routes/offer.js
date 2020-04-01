@@ -115,7 +115,7 @@ router.get("/offer/with-count", async (req, res) => {
     }
     // je créé une constante qui contient le résultat de la recherche
     const offers = await search;
-    console.log("search==> ", search);
+    console.log("offers==> ", offers);
     const count = offers.length;
     const tab = [];
     // je parcours ma recherche
