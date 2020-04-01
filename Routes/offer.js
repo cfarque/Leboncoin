@@ -91,6 +91,7 @@ const createFilter = req => {
 };
 router.get("/offer/with-count", async (req, res) => {
   try {
+    console.log(req.query);
     const filters = createFilter(req);
     // j'utilise les filtres
     const search = Offer.find(filters).populate("creator");
