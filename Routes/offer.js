@@ -18,7 +18,7 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const files = Object.keys(req.files.files);
+    const files = Object.keys(req.files);
     console.log(1);
     if (files.length) {
       const pictures = [];
@@ -27,9 +27,11 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         console.log("key==> ", key);
         console.log(3);
         console.log("files.length===> ", files.length);
-        console.log("files[key].path===> ", files[key].path);
+        console.log("files.files====>> ", files.files);
+        console.log("files.files[key]===> ", files.files[key]);
+        console.log("files[key].path===> ", files.files[key].path);
         cloudinary.uploader.upload(
-          files[key].path,
+          files.files.path,
           {
             folder: "Leboncoin"
           },
