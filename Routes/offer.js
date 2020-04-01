@@ -101,10 +101,10 @@ router.get("/offer/with-count", async (req, res) => {
       search.sort({ price: -1 });
     }
     if (req.query.date === "date-asc") {
-      search.sort({ date: -1 });
+      search.sort({ created: -1 });
       console.log("asc");
     } else if (req.query.date === "date-desc") {
-      search.sort({ date: 1 });
+      search.sort({ created: 1 });
       console.log("desc");
     }
 
