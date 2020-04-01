@@ -124,7 +124,7 @@ router.get("/offer/with-count", async (req, res) => {
         (newOffer.description = offer.description),
         (newOffer.price = offer.price),
         (newOffer.created = offer.created),
-        (newOffer.picture = offer.picture),
+        (newOffer.pictures = offer.pictures),
         (newOffer.username = offer.creator.account.username);
       //
       tab.push(newOffer);
@@ -139,7 +139,6 @@ router.get("/offer/with-count", async (req, res) => {
 router.get("/offer/:id", async (req, res) => {
   try {
     const offer = await Offer.findById(req.params.id).populate("creator");
-    console.log(offer);
     res.json(offer);
   } catch (error) {
     res.json("raté");
