@@ -20,7 +20,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const files = Object.keys(req.files.files);
     console.log("file===>", req.files.files);
-    console.log("File===>", req.files.files[0].File);
+    console.log("File===>", req.files.files[0]);
     if (files.length) {
       const pictures = [];
       files.forEach(key => {
