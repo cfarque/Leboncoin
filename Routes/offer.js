@@ -19,19 +19,18 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const filesTab = req.files.files;
-    console.log("file===>", filesTab);
+    console.log("filesTab===>", filesTab);
     console.log("File===>", req.files.files[0]);
-    console.log("File===>", req.files.files[0].File);
-    console.log("File===>", req.files.files[0].file);
 
     if (filesTab.length) {
       const pictures = [];
-      req.files.files.forEach(key => {
+      filesTab.forEach((file, index) => {
         console.log("key==> ", key);
-        console.log("files.length===> ", filesTab.length);
-        console.log("filesTab[key]===> ", filesTab[key]);
+        console.log("filesTab.length===> ", filesTab.length);
+        console.log("filesTab[index]===> ", filesTab[index]);
+        console.log("filesTab[index].path===> ", filesTab[index].path);
         cloudinary.uploader.upload(
-          filesTab[key].path,
+          filesTab[index].path,
           {
             folder: "Leboncoin"
           },
