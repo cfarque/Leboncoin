@@ -31,9 +31,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             if (!error) {
               pictures.push(result.secure_url);
             } else {
-              return res
-                .status(500)
-                .json({ message: "Erreur dans l'import des fichiers" });
+              res.json({ message: error.message });
             }
 
             if (pictures.length === files.length) {
