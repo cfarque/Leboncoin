@@ -27,17 +27,17 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         console.log("req.files", req.files);
         cloudinary.uploader.upload(
           req.files[key].path,
-          async (result, error) => {
+          async (error, result) => {
             if (!error) {
               pictures.push(result.secure_url);
             } else {
               res.json({ message: error.message });
+              console.log(error);
             }
 
             if (pictures.length === files.length) {
               // tous les uploads sont terminés, on peut donc envoyer la réponse au client
 
-              req.user.account.nbOffers = req.user.account.nbOffers + 1;
               await req.user.save();
 
               const newOffer = new Offer({
