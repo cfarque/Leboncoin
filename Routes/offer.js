@@ -18,7 +18,7 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const filesTab = req.files.files;
+    const filesTab = req.files.files || req.files;
     console.log(filesTab.length);
     if (filesTab.length) {
       const pictures = [];
