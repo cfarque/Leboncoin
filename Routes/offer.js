@@ -18,47 +18,51 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const filesTab = req.files.files;
-    console.log(req.files.files);
-    if (filesTab.length) {
+    const files = Object.keys(req.files);
+
+    if (files.length) {
       const pictures = [];
-      filesTab.forEach((file, index) => {
+
+      files.forEach(key => {
+        console.log("req.files", req.files);
         cloudinary.uploader.upload(
-          filesTab[index].path,
-          {
-            folder: "Leboncoin"
-          },
-          async (error, result) => {
+          req.files[key].path,
+          async (result, error) => {
             if (!error) {
               pictures.push(result.secure_url);
             } else {
-              console.log("error===> ", error);
+              return res
+                .status(500)
+                .json({ message: "Erreur dans l'import des fichiers" });
             }
-            if (pictures.length === filesTab.length) {
-              // je créé une nouvelle offre
-              const offer = new Offer({
+
+            if (pictures.length === files.length) {
+              // tous les uploads sont terminés, on peut donc envoyer la réponse au client
+
+              req.user.account.nbOffers = req.user.account.nbOffers + 1;
+              await req.user.save();
+
+              const newOffer = new Offer({
                 title: req.fields.title,
                 description: req.fields.description,
                 price: req.fields.price,
                 creator: req.user,
-                pictures: pictures
+                pictures
               });
 
-              // je sauvegarde l'offre
+              await newOffer.save();
 
-              await offer.save();
-
-              res.json({
-                _id: offer.id,
-                title: offer.title,
-                date: offer.created,
-                description: offer.description,
-                created: offer.date,
-                pictures: offer.pictures,
+              return res.json({
+                _id: newOffer._id,
+                title: req.fields.title,
+                description: req.fields.description,
+                price: req.fields.price,
+                created: newOffer.created,
                 creator: {
-                  username: offer.creator.account.username,
-                  _id: offer.creator._id
-                }
+                  account: newOffer.creator.account,
+                  _id: newOffer.creator._id
+                },
+                pictures
               });
             }
           }
