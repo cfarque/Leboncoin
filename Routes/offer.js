@@ -18,11 +18,10 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const filesTab = req.files.files || req.files;
+    const filesTab = req.files.files;
     console.log(req.files.files);
-    console.log(req.files.length);
     const pictures = [];
-    if (filesTab.length) {
+    if (filesTab) {
       filesTab.forEach((file, index) => {
         cloudinary.uploader.upload(
           filesTab[index].path,
