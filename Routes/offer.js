@@ -19,10 +19,8 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const filesTab = req.files.files;
-    const pictures = [];
     if (filesTab.length) {
-      console.log(filesTab);
-      console.log(filesTab.length);
+      const pictures = [];
       filesTab.forEach((file, index) => {
         cloudinary.uploader.upload(
           filesTab[index].path,
@@ -35,36 +33,35 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             } else {
               console.log("error===> ", error);
             }
+            if (pictures.length === filesTab.length) {
+              // je créé une nouvelle offre
+              const offer = new Offer({
+                title: req.fields.title,
+                description: req.fields.description,
+                price: req.fields.price,
+                creator: req.user,
+                pictures: pictures
+              });
+
+              // je sauvegarde l'offre
+
+              await offer.save();
+
+              res.json({
+                _id: offer.id,
+                title: offer.title,
+                date: offer.created,
+                description: offer.description,
+                created: offer.date,
+                pictures: offer.pictures,
+                creator: {
+                  username: offer.creator.account.username,
+                  _id: offer.creator._id
+                }
+              });
+            }
           }
         );
-      });
-    }
-
-    if (pictures.length === filesTab.length) {
-      // je créé une nouvelle offre
-      const offer = new Offer({
-        title: req.fields.title,
-        description: req.fields.description,
-        price: req.fields.price,
-        creator: req.user,
-        pictures: pictures
-      });
-
-      // je sauvegarde l'offre
-
-      await offer.save();
-
-      res.json({
-        _id: offer.id,
-        title: offer.title,
-        date: offer.created,
-        description: offer.description,
-        created: offer.date,
-        pictures: offer.pictures,
-        creator: {
-          username: offer.creator.account.username,
-          _id: offer.creator._id
-        }
       });
     }
   } catch (error) {
