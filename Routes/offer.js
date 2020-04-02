@@ -22,6 +22,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     console.log(req.files.files);
     const pictures = [];
     if (filesTab) {
+      console.log(typeof filesTab);
       filesTab.forEach((file, index) => {
         cloudinary.uploader.upload(
           filesTab[index].path,
