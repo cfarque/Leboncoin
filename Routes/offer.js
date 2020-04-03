@@ -18,57 +18,69 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    let filesTab;
-    if (Array.isArray(req.files.files)) {
-      filesTab = req.files.files;
-    } else {
-      filesTab = [req.files.files];
-    }
-    const pictures = [];
-    filesTab.forEach(file => {
-      console.log("file", file);
-      cloudinary.uploader.upload(file.path, async (error, result) => {
-        if (!error) {
-          pictures.push(result.secure_url);
-        } else {
-          res.json({ message: error.message });
-          console.log(error);
-        }
-        let newOffer;
-        if (filesTab && pictures.length === filesTab.length) {
-          console.log("tab");
-          newOffer = new Offer({
+    if (req.files) {
+      let filesTab;
+      if (Array.isArray(req.files.files)) {
+        filesTab = req.files.files;
+      } else {
+        filesTab = [req.files.files];
+      }
+      const pictures = [];
+      filesTab.forEach(file => {
+        console.log("file", file);
+        cloudinary.uploader.upload(file.path, async (error, result) => {
+          if (!error) {
+            pictures.push(result.secure_url);
+          } else {
+            res.json({ message: error.message });
+            console.log(error);
+          }
+          if (pictures.length === filesTab.length) {
+            const newOffer = new Offer({
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              creator: req.user,
+              pictures
+            });
+            await newOffer.save();
+          }
+
+          return res.json({
+            _id: newOffer._id,
             title: req.fields.title,
             description: req.fields.description,
             price: req.fields.price,
-            creator: req.user,
+            created: newOffer.created,
+            creator: {
+              account: newOffer.creator.account,
+              _id: newOffer.creator._id
+            },
             pictures
           });
-        } else {
-          console.log("autre");
-          newOffer = new Offer({
-            title: req.fields.title,
-            description: req.fields.description,
-            price: req.fields.price,
-            creator: req.user
-          });
-        }
-        await newOffer.save();
-
-        return res.json({
-          _id: newOffer._id,
-          title: req.fields.title,
-          description: req.fields.description,
-          price: req.fields.price,
-          created: newOffer.created,
-          creator: {
-            account: newOffer.creator.account,
-            _id: newOffer.creator._id
-          },
-          pictures
         });
       });
-    });
+    } else {
+      const newOffer = new Offer({
+        title: req.fields.title,
+        description: req.fields.description,
+        price: req.fields.price,
+        creator: req.user
+      });
+      await newOffer.save();
+      return res.json({
+        _id: newOffer._id,
+        title: req.fields.title,
+        description: req.fields.description,
+        price: req.fields.price,
+        created: newOffer.created,
+        creator: {
+          account: newOffer.creator.account,
+          _id: newOffer.creator._id
+        },
+        pictures
+      });
+    }
   } catch (error) {
     res.json({ error: error.message });
   }
