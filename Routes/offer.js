@@ -33,7 +33,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             console.log(error);
           }
 
-          if (pictures.length === files.length) {
+          if (pictures.length === filesTab.length) {
             // tous les uploads sont terminés, on peut donc envoyer la réponse au client
 
             await req.user.save();
