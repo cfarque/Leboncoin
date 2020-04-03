@@ -19,51 +19,51 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
     const filesTab = req.files.files;
+    console.log("req.files==> ", req.files);
+    console.log("req.files.files==> ", req.files.files);
+    // if (filesTab.length) {
+    //   const pictures = [];
 
-    if (filesTab.length) {
-      const pictures = [];
+    //   filesTab.forEach(file => {
+    //     console.log("file", file);
+    //     cloudinary.uploader.upload(file.path, async (error, result) => {
+    //       if (!error) {
+    //         pictures.push(result.secure_url);
+    //       } else {
+    //         res.json({ message: error.message });
+    //         console.log(error);
+    //       }
 
-      filesTab.forEach(file => {
-        console.log("file", file);
-        cloudinary.uploader.upload(file.path, async (error, result) => {
-          if (!error) {
-            pictures.push(result.secure_url);
-          } else {
-            res.json({ message: error.message });
-            console.log(error);
-          }
+    //       if (pictures.length === filesTab.length) {
+    //         await req.user.save();
 
-          if (pictures.length === filesTab.length) {
-            // tous les uploads sont terminés, on peut donc envoyer la réponse au client
+    //         const newOffer = new Offer({
+    //           title: req.fields.title,
+    //           description: req.fields.description,
+    //           price: req.fields.price,
+    //           creator: req.user,
+    //           pictures
+    //         });
 
-            await req.user.save();
+    //         await newOffer.save();
 
-            const newOffer = new Offer({
-              title: req.fields.title,
-              description: req.fields.description,
-              price: req.fields.price,
-              creator: req.user,
-              pictures
-            });
-
-            await newOffer.save();
-
-            return res.json({
-              _id: newOffer._id,
-              title: req.fields.title,
-              description: req.fields.description,
-              price: req.fields.price,
-              created: newOffer.created,
-              creator: {
-                account: newOffer.creator.account,
-                _id: newOffer.creator._id
-              },
-              pictures
-            });
-          }
-        });
-      });
-    }
+    //         return res.json({
+    //           _id: newOffer._id,
+    //           title: req.fields.title,
+    //           description: req.fields.description,
+    //           price: req.fields.price,
+    //           created: newOffer.created,
+    //           creator: {
+    //             account: newOffer.creator.account,
+    //             _id: newOffer.creator._id
+    //           },
+    //           pictures
+    //         });
+    //       }
+    //     });
+    //   });
+    // }
+    res.json("test");
   } catch (error) {
     res.json({ error: error.message });
   }
