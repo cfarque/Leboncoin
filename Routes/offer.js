@@ -18,53 +18,50 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    const files = Object.keys(req.files);
+    const filesTab = req.files.files;
 
-    if (files.length) {
+    if (filesTab.length) {
       const pictures = [];
 
-      files.forEach(key => {
+      filesTab.forEach((file, index) => {
         console.log("req.files", req.files);
-        cloudinary.uploader.upload(
-          req.files[key].path,
-          async (error, result) => {
-            if (!error) {
-              pictures.push(result.secure_url);
-            } else {
-              res.json({ message: error.message });
-              console.log(error);
-            }
-
-            if (pictures.length === files.length) {
-              // tous les uploads sont terminés, on peut donc envoyer la réponse au client
-
-              await req.user.save();
-
-              const newOffer = new Offer({
-                title: req.fields.title,
-                description: req.fields.description,
-                price: req.fields.price,
-                creator: req.user,
-                pictures
-              });
-
-              await newOffer.save();
-
-              return res.json({
-                _id: newOffer._id,
-                title: req.fields.title,
-                description: req.fields.description,
-                price: req.fields.price,
-                created: newOffer.created,
-                creator: {
-                  account: newOffer.creator.account,
-                  _id: newOffer.creator._id
-                },
-                pictures
-              });
-            }
+        cloudinary.uploader.upload(files[index].path, async (error, result) => {
+          if (!error) {
+            pictures.push(result.secure_url);
+          } else {
+            res.json({ message: error.message });
+            console.log(error);
           }
-        );
+
+          if (pictures.length === files.length) {
+            // tous les uploads sont terminés, on peut donc envoyer la réponse au client
+
+            await req.user.save();
+
+            const newOffer = new Offer({
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              creator: req.user,
+              pictures
+            });
+
+            await newOffer.save();
+
+            return res.json({
+              _id: newOffer._id,
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              created: newOffer.created,
+              creator: {
+                account: newOffer.creator.account,
+                _id: newOffer.creator._id
+              },
+              pictures
+            });
+          }
+        });
       });
     }
   } catch (error) {
