@@ -34,33 +34,37 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           res.json({ message: error.message });
           console.log(error);
         }
-
+        let newOffer;
         if (pictures.length === filesTab.length) {
-          await req.user.save();
-
-          const newOffer = new Offer({
+          newOffer = new Offer({
             title: req.fields.title,
             description: req.fields.description,
             price: req.fields.price,
             creator: req.user,
             pictures
           });
-
-          await newOffer.save();
-
-          return res.json({
-            _id: newOffer._id,
+        } else {
+          newOffer = new Offer({
             title: req.fields.title,
             description: req.fields.description,
             price: req.fields.price,
-            created: newOffer.created,
-            creator: {
-              account: newOffer.creator.account,
-              _id: newOffer.creator._id
-            },
-            pictures
+            creator: req.user
           });
         }
+        await newOffer.save();
+
+        return res.json({
+          _id: newOffer._id,
+          title: req.fields.title,
+          description: req.fields.description,
+          price: req.fields.price,
+          created: newOffer.created,
+          creator: {
+            account: newOffer.creator.account,
+            _id: newOffer.creator._id
+          },
+          pictures
+        });
       });
     });
   } catch (error) {
