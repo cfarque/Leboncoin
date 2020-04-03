@@ -21,49 +21,48 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
     const filesTab = req.files.files;
     console.log("req.files==> ", req.files);
     console.log("req.files.files==> ", req.files.files);
-    // if (filesTab.length) {
-    //   const pictures = [];
+    if (Array.isArray(filesTab)) {
+      const pictures = [];
 
-    //   filesTab.forEach(file => {
-    //     console.log("file", file);
-    //     cloudinary.uploader.upload(file.path, async (error, result) => {
-    //       if (!error) {
-    //         pictures.push(result.secure_url);
-    //       } else {
-    //         res.json({ message: error.message });
-    //         console.log(error);
-    //       }
+      filesTab.forEach(file => {
+        console.log("file", file);
+        cloudinary.uploader.upload(file.path, async (error, result) => {
+          if (!error) {
+            pictures.push(result.secure_url);
+          } else {
+            res.json({ message: error.message });
+            console.log(error);
+          }
 
-    //       if (pictures.length === filesTab.length) {
-    //         await req.user.save();
+          if (pictures.length === filesTab.length) {
+            await req.user.save();
 
-    //         const newOffer = new Offer({
-    //           title: req.fields.title,
-    //           description: req.fields.description,
-    //           price: req.fields.price,
-    //           creator: req.user,
-    //           pictures
-    //         });
+            const newOffer = new Offer({
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              creator: req.user,
+              pictures
+            });
 
-    //         await newOffer.save();
+            await newOffer.save();
 
-    //         return res.json({
-    //           _id: newOffer._id,
-    //           title: req.fields.title,
-    //           description: req.fields.description,
-    //           price: req.fields.price,
-    //           created: newOffer.created,
-    //           creator: {
-    //             account: newOffer.creator.account,
-    //             _id: newOffer.creator._id
-    //           },
-    //           pictures
-    //         });
-    //       }
-    //     });
-    //   });
-    // }
-    res.json("test");
+            return res.json({
+              _id: newOffer._id,
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              created: newOffer.created,
+              creator: {
+                account: newOffer.creator.account,
+                _id: newOffer.creator._id
+              },
+              pictures
+            });
+          }
+        });
+      });
+    }
   } catch (error) {
     res.json({ error: error.message });
   }
