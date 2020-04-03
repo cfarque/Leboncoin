@@ -18,7 +18,8 @@ const isAuthenticated = require("../Middleware/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
   try {
-    if (req.files) {
+    if (req.files.files) {
+      console.log("test");
       let filesTab;
       if (Array.isArray(req.files.files)) {
         filesTab = req.files.files;
