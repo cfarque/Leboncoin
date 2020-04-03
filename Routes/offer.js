@@ -35,7 +35,8 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
           console.log(error);
         }
         let newOffer;
-        if (pictures.length === filesTab.length) {
+        if (filesTab && pictures.length === filesTab.length) {
+          console.log("tab");
           newOffer = new Offer({
             title: req.fields.title,
             description: req.fields.description,
@@ -44,6 +45,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
             pictures
           });
         } else {
+          console.log("autre");
           newOffer = new Offer({
             title: req.fields.title,
             description: req.fields.description,
