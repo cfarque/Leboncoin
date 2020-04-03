@@ -45,20 +45,19 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
               pictures
             });
             await newOffer.save();
+            return res.json({
+              _id: newOffer._id,
+              title: req.fields.title,
+              description: req.fields.description,
+              price: req.fields.price,
+              created: newOffer.created,
+              creator: {
+                account: newOffer.creator.account,
+                _id: newOffer.creator._id
+              },
+              pictures
+            });
           }
-
-          return res.json({
-            _id: newOffer._id,
-            title: req.fields.title,
-            description: req.fields.description,
-            price: req.fields.price,
-            created: newOffer.created,
-            creator: {
-              account: newOffer.creator.account,
-              _id: newOffer.creator._id
-            },
-            pictures
-          });
         });
       });
     } else {
@@ -78,8 +77,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         creator: {
           account: newOffer.creator.account,
           _id: newOffer.creator._id
-        },
-        pictures
+        }
       });
     }
   } catch (error) {
